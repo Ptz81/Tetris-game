@@ -1,8 +1,8 @@
 const PLAYFIELD_COLUMNS = 10;
 const PLAYFIELD_ROWS = 20;
 const TETROMINO_NAME = [
-    "O",
-    "J",
+    'O',
+    'J',
     'T',
     'C',
     'D',
@@ -14,13 +14,13 @@ const TETROMINO_NAME = [
 //figures
 const TETROMINOES = {
     'O': [
-        [1,1],
-        [1,1] 
+        [1, 1],
+        [1, 1] 
     ],
     'J': [
-        [1,0],
+        [1, 0],
         [1, 1],
-        [0,0]
+        [0, 0]
     ],
     'T': [
         [1, 1, 1],
@@ -30,22 +30,22 @@ const TETROMINOES = {
     'C': [
         [1, 1],
         [1, 0],
-        [1,1]
+        [1, 1]
     ],
 
     'D': [
-        [0,1]
+        [0, 1]
     ],
 
     'F': [
         [1, 0],
         [1, 1],
-        [0,1]
+        [0, 1]
     ],
     'E': [
         [1, 1, 1],
         [0, 1, 0],
-        [0,0,0]
+        [0, 0, 0]
     ],
     'I': [
         [0, 1, 0],
@@ -67,31 +67,31 @@ let tetromino; //фігура
 function generatePlayfield() {
     for (let i = 0; i < PLAYFIELD_COLUMNS * PLAYFIELD_ROWS; i++) {
         const div = document.createElement(`div`);
-        document.querySelector(".grid" ).append(div);
+        document.querySelector('.grid ').append(div);
     }
     playfield = new Array(PLAYFIELD_ROWS).fill()
-        .map(() => new Array(PLAYFIELD_COLUMNS).fill(0))
+        .map(() => new Array(PLAYFIELD_COLUMNS).fill(0));
     // console.table(playfield);
 }
 
 //формуємо фігуру по параметрах
 function generateTetromino() {
-
-    const name = TETROMINO_NAME[Math.floor(Math.random() * TETROMINO_NAME.length) - 1];
+    const name = TETROMINO_NAME[Math.floor(Math.random() * TETROMINO_NAME.length)];
     const matrix = TETROMINOES[name];
-    const center = Math.floor((PLAYFIELD_COLUMNS - matrix[0].length) / 2);//центруємо фігуру
-        tetromino = {
-            name,
-            matrix,
-            row: 1,
-            column: center,
-        };
+    const center = Math.floor((PLAYFIELD_COLUMNS - matrix[0].length) / 2);
+        
+    tetromino = {
+        name,
+        matrix,
+        row: 0,
+        column: center,
+    };
 }
 
-
+generateTetromino();
 
 generatePlayfield();
-generateTetromino();
+
 const cells = document.querySelectorAll('.grid div')
 
 
