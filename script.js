@@ -77,23 +77,22 @@ function generatePlayfield() {
 //формуємо фігуру по параметрах
 function generateTetromino() {
 
-    //назва фігури
-    const name = TETROMINO_NAME[7];
-    const matrix = TETROMINOES[name]; 
-    console.log(matrix);
-    tetromino = {
-        name,
-        matrix,
-        row: 2,
-        column: 4
-    }
+    const name = TETROMINO_NAME[Math.floor(Math.random() * TETROMINO_NAME.length)];
+    const matrix = TETROMINOES[name];
+    const center = Math.floor((PLAYFIELD_COLUMNS - matrix[0].length) / 2);
+        tetromino = {
+            name,
+            matrix,
+            row: 3,
+            column: center,
+        };
 }
+
 
 
 generatePlayfield();
 generateTetromino();
 const cells = document.querySelectorAll('.grid div')
-
 
 
 // видалити малюнок - додати малюнок
@@ -145,6 +144,7 @@ draw();
 
 
 
+
 //keybord
 document.addEventListener('keydown', onKeyDown)
 function onKeyDown(e) { 
@@ -175,13 +175,4 @@ function moveTetrominoLeft() {
 }
 function moveTetrominoRight() {
     tetromino.column += 1;
-
 }
-
-/*
-- додати нові фігури,
-- стилізувати кожну фігуру
-- додати функцію рандомну, яка повертає випадкову фігуру
-- центрувати фігуру незалежно від ширини
-
-*/ 
