@@ -18,9 +18,9 @@ const TETROMINOES = {
         [1,1] 
     ],
     'J': [
-        [1,0,0],
-        [1, 1, 0],
-        [0,0,0]
+        [1,0],
+        [1, 1],
+        [0,0]
     ],
     'T': [
         [1, 1, 1],
@@ -79,11 +79,11 @@ function generateTetromino() {
 
     const name = TETROMINO_NAME[Math.floor(Math.random() * TETROMINO_NAME.length)];
     const matrix = TETROMINOES[name];
-    const center = Math.floor((PLAYFIELD_COLUMNS - matrix[0].length) / 2);
+    const center = Math.floor((PLAYFIELD_COLUMNS - matrix[0].length) / 2);//центруємо фігуру
         tetromino = {
             name,
             matrix,
-            row: 3,
+            row: 1,
             column: center,
         };
 }
