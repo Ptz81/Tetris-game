@@ -1,7 +1,7 @@
 const PLAYFIELD_COLUMNS = 10;
 const PLAYFIELD_ROWS = 20;
 const TETROMINO_NAME = [
-    "0",
+    "O",
     "J",
     'T',
     'C',
@@ -34,7 +34,7 @@ const TETROMINOES = {
     ],
 
     'D': [
-        [1]
+        [0,1]
     ],
 
     'F': [
@@ -77,7 +77,7 @@ function generatePlayfield() {
 //формуємо фігуру по параметрах
 function generateTetromino() {
 
-    const name = TETROMINO_NAME[Math.floor(Math.random() * TETROMINO_NAME.length)];
+    const name = TETROMINO_NAME[Math.floor(Math.random() * TETROMINO_NAME.length) - 1];
     const matrix = TETROMINOES[name];
     const center = Math.floor((PLAYFIELD_COLUMNS - matrix[0].length) / 2);//центруємо фігуру
         tetromino = {
