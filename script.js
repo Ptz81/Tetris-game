@@ -58,8 +58,8 @@ function convertPositionToIndex(row, column) {
     return row*PLAYFIELD_COLUMNS + column
 }
 
-let playfield; //поле
-let tetromino; //фігура
+let playfield; //поле порожнє
+let tetromino; //фігура порожня
 
 
 
@@ -94,50 +94,72 @@ function placeTetromino() {
     // проходимо по полю і визначаємо де додати колір, а де ні
     for (let row = 0; row < matrixSize; row++) { 
         for (let column = 0; column < matrixSize; column++) { 
-            playfield[tetromino.row + row][tetromino.column + column] = tetromino.name;
+            if (tetromino.matrix[row][column]) {
+               playfield[tetromino.row + row][tetromino.column + column] = tetromino.name; 
+            }
+            
         }
     }
     generateTetromino();
 }
-
+//ГЕНЕРУЄТЬСЯ ПОЛЕ
 generatePlayfield();
+//СТВОРЮЄТЬСЯ ФІГУРКА
 generateTetromino();
 
 
 const cells = document.querySelectorAll('.grid div')
 
 
-// видалити малюнок - додати малюнок
+// видалити малюнок - додати малюнок -> памятає всі наші фігури
 function drawPlayfield() { 
     for (let row = 0; row < PLAYFIELD_ROWS; row++) {
         for (let column = 0; column < PLAYFIELD_COLUMNS; column++) {
-            if (playfield[row][column] == 0) continue; //пропустити малювання
+            if (playfield[row][column] == 0) continue; //якщо там 0 (ми все поле наповнили нулями, пропустити малювання
 
             //момент малювання
             const name = playfield[row][column];
-const cellIndex = convertPositionToIndex(row, column)(
-              cells[cellIndex].classList.add(name),
-          )
+            //момент індексації поля
+            const cellIndex = convertPositionToIndex(row, column)
+            //додаємо класи для промальовки
+            cells[cellIndex].classList.add(name);
         }
     }
 }
 
 
+
+
+
+
+
+
 //малювання фігури
 function drawTetromino() { 
+    //вибрали імя
     const name = tetromino.name;
-    //different size of figures
+    //dвибрали пропорції фігури
     const tetrominoMatrixSize = tetromino.matrix.length;
 
-
+// проходимо циклом по параметрам фігури
     for (let row = 0; row < tetrominoMatrixSize; row++) {
-      for (let column = 0; column < tetrominoMatrixSize; column++) {
+        for (let column = 0; column < tetrominoMatrixSize; column++) {
+            // результат алгоритму функції rotateMatrix()
+
+        //     const cellIndex = convertPositionToIndex(
+        //       tetromino.row + row,
+        //       tetromino.column + column,
+        //   )
+            //   cells[cellIndex].innerHTML = showRotated[row][column];
+            
+            //якщо там 
           if (!tetromino.matrix[row][column]) continue; 
-          const cellIndex = convertPositionToIndex(
+                const cellIndex = convertPositionToIndex(
               tetromino.row + row,
               tetromino.column + column,
           )
-        //   console.log(cellIndex);
+          //   console.log(cellIndex);
+          
           cells[cellIndex].classList.add(name);
  } // column
     }
@@ -146,38 +168,61 @@ function drawTetromino() {
 // drawTetromino();
 // drawPlayfield();
 
-//почистити
+//почистити і перемалювати
 function draw() {
+    //проходимся по всьому полі і видаляємо лишні класи
     cells.forEach(cell => cell.removeAttribute('class'));
-    drawPlayfield(); // перемальовуємо поле, щоб подачити усі фігури, які є
+    // перемальовуємо поле, щоб побачити усі фігури, які є
+    drawPlayfield(); 
     drawTetromino(); 
 }
 
-draw();
-
 //перегортання
 function rotateTetromino() {
-    //визначити позицію стаолї фігури і перемикатись на нову
-}
+    //визначити позицію сталої фігури і перемикатись на нову
 
-function rotateMatrix(matrixTetromino) {
-    const N = matrixTetromino.length;
-    const rotateMatrix = [];
-    for (let i = 0; i < N; i++){
-        rotateMatrix[i] = [];
-        for (let j = 0; j < N; j++){
-            rotateMatrix[i][j] = matrixTetromino[n - j - 1[i]];
-        }
+    //зберегти стару позицію
+    const oldMatrix = tetromino.matrix; 
+
+    //перевертаємо
+    const rotatedMatrix = rotateMatrix(tetromino.matrix);
+
+    //для підказки, щоб цифри перемальовувались
+    // showRotated = rotateMatrix(showRotated);
+
+    //перезаписуємо актуальний стан фігури
+    tetromino.matrix = rotatedMatrix;
+
+    //ЩОБ ФІГУРИ НЕ НАЛАЗИЛИ ОДНА НА ОДНУ - якщо не валідна матриця - повертаємо стару
+    if(!isValid()){
+        tetromino.matrix = oldMatrix;
     }
 }
+let showRotated = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
 
-//keybord
+
+draw();
+
+// перегортання фігури
+function rotate() {
+    //виконуються розрахунки
+    rotateTetromino();
+    //перемальовується
+    draw();
+
+}
+
+//клавіатура - керування та умови
 document.addEventListener('keydown', onKeyDown)
 function onKeyDown(e) { 
     // console.log(e)
     switch (e.key) { 
          case'ArrowUp':
-            // rotate();
+            rotate();
             break;
         case'ArrowDown':
             moveTetrominoDown();
@@ -190,6 +235,21 @@ function onKeyDown(e) {
             break;
     }
     draw() 
+}
+
+// абстрактно промальовується поворот фігури
+function rotateMatrix(matrixTetromino) {
+    //розраховуємо довжину
+    const N = matrixTetromino.length;
+    //будемо зберігати новостворений масив матриці фігури
+    const rotateMatrix = [];
+    for (let i = 0; i < N; i++){
+        rotateMatrix[i] = [];
+        for (let j = 0; j < N; j++){
+            rotateMatrix[i][j] = matrixTetromino[N - j - 1][i];
+        }
+    }
+    return rotateMatrix;
 }
 
 
@@ -221,9 +281,9 @@ function isValid() {
     const matrixSize = tetromino.matrix.length;
     for (let row = 0; row < matrixSize; row++) {
         for (let column = 0; column < matrixSize; column++) {
-            if (tetromino.matrix[row][column]) {
-                continue;
-            }
+            // if (tetromino.matrix[row][column]) {
+            //     continue;
+            // }
             // можна рухатись чи не можна
             if (isOutSideOfGameboard(row, column)) {
                 return false;
@@ -237,11 +297,17 @@ function isValid() {
     return true;
 }
 //чи дійшла до краю фігура
-function isOutSideOfGameboard(row, column) { 
-    return tetromino.column + column < 0 || tetromino.column + column >= PLAYFIELD_COLUMNS ||
-        tetromino.row + row >= playfield.length;
+function isOutSideOfGameboard(row, column) {
+    return tetromino.matrix[row][column] &&
+        (
+            tetromino.column + column < 0 ||
+            tetromino.column + column >= PLAYFIELD_COLUMNS ||
+            tetromino.row + row >= PLAYFIELD_ROWS
+        );
 }
+
 //
 function hasCollisions(row, column) { 
-    return playfield[tetromino.row + row][tetromino.column + column]
+    return tetromino.matrix[row][column]
+        && playfield[tetromino.row + row][tetromino.column + column];
 }
