@@ -1,5 +1,19 @@
 const PLAYFIELD_COLUMNS = 10;
 const PLAYFIELD_ROWS = 20;
+
+const scoreElement = document.querySelector('.score');
+const btn = document.querySelector('.btn');
+const overlay = document.querySelector('.overlay');
+const cells = document.querySelectorAll('.grid div')
+
+let playfield; //поле порожнє
+let tetromino; //фігура порожня
+let isGameOver = false; 
+let isPause = false;
+let timeId = null; 
+let score = 0;
+
+
 const TETROMINO_NAME = [
     'O',
     'J',
@@ -58,8 +72,6 @@ function convertPositionToIndex(row, column) {
     return row*PLAYFIELD_COLUMNS + column
 }
 
-let playfield; //поле порожнє
-let tetromino; //фігура порожня
 
 
 
@@ -108,7 +120,7 @@ generatePlayfield();
 generateTetromino();
 
 
-const cells = document.querySelectorAll('.grid div')
+
 
 
 // видалити малюнок - додати малюнок -> памятає всі наші фігури
@@ -243,6 +255,7 @@ function rotateMatrix(matrixTetromino) {
     const N = matrixTetromino.length;
     //будемо зберігати новостворений масив матриці фігури
     const rotateMatrix = [];
+    //цикл перегортання - проходимось по масиву фігури і змінюємо положення
     for (let i = 0; i < N; i++){
         rotateMatrix[i] = [];
         for (let j = 0; j < N; j++){
@@ -311,3 +324,8 @@ function hasCollisions(row, column) {
     return tetromino.matrix[row][column]
         && playfield[tetromino.row + row][tetromino.column + column];
 }
+
+// поставити const rowTetro = -2, прописати код, щоб працювало коректно
+// зверстати поле для розрахунку балів
+// прописати логіку і код розрахунку балі гри (1 ряд = 10, 2 ряди = 30, 3 ряди = 50, 4 ряди =100)
+// реалізувати самостійний рух фігур до низу.
