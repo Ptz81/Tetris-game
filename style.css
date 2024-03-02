@@ -70,6 +70,10 @@ body {
     background-color: rgb(224, 59, 211);
 }
 
+.grid .L {
+    background-color: rgb(59, 224, 95);
+}
+
 .overlay {
     position: fixed;
     top: 0;
