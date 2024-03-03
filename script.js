@@ -1,3 +1,27 @@
+// ДЗ №1
+// 1. Додати нові фігури
+// 2. Стилізувати нові фігури
+// 3. Додати функцію рандому котра буде поветати випадкову фігуру
+// 4. Центрувати фігуру незалежно від ширини
+
+
+// ДЗ №2
+// 1. Поставити const rowTetro = -2; прописати код щоб працювало коректно
+// 2. Зверстати поле для розрахунку балів гри
+// 3. Прописати логіку і код розрахунку балів гри (1 ряд = 10; 2 ряди = 30; 3 ряди = 50; 4 = 100)
+// 4. Реалізувати самостійний рух фігур до низу
+
+// ДЗ №3
+// 1.Зробити розмітку висновків гри (Час гри, набрана кількість балів і т.п)
+// 2.Створити окрему кнопку рестарт що перезапускатиме гру посеред гри
+// 3.Додати клавіатуру на екрані браузеру 
+
+// Додаткове складніше завдання
+// 4.Показувати наступну фігуру що буде випадати
+// 5.Додати рівні при котрих збільшується швидкість падіння фігур
+// 6.Зберегти і виводити найкращий власний результат
+
+
 const PLAYFIELD_COLUMNS = 10;
 const PLAYFIELD_ROWS = 20;
 
@@ -13,63 +37,65 @@ let isPaused = false;
 let timedId = null; 
 let score = 0;
 let cells;
+let timerInterval;
+let totalSeconds = 0;
 
 
 const TETROMINO_NAME = [
-    'O',
-    'J',
-    'T',
+    'A',
+    'B',
     'C',
     'D',
-    'F',
     'E',
+    'F',
+    'G',
+    'H',
     'I',
-    'L',
 ]
 
 //figures
 const TETROMINOES = {
-    'O': [
+    'A': [
         [1, 1],
-        [1, 1] 
+        [1, 1], 
     ],
-    'J': [
+    'B': [
         [1, 0],
         [1, 1],
-        [0, 0]
-    ],
-    'T': [
-        [1, 1, 1],
-        [0, 1, 0],
-        [0, 1, 0]
+        [0, 0],
     ],
     'C': [
+        [1, 1, 1],
+        [0, 1, 0],
+        [0, 1, 0],
+    ],
+    'D': [
         [1, 1],
         [1, 0],
-        [1, 1]
+        [1, 1],
     ],
 
-    'D': [
-        [0, 1]
+    'E': [
+        [0, 1],
     ],
 
     'F': [
         [1, 0],
         [1, 1],
-        [0, 1]
+        [0, 1],
     ],
-    'E': [
+    'G': [
         [1, 1, 1],
         [0, 1, 0],
-        [0, 0, 0]
+        [0, 0, 0],
     ],
-    'I': [
+    'H': [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
         [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [0, 0, 0, 0],
     ],
-     'L': [
+     'I': [
         [0, 0, 1],
         [1, 1, 1],
         [0, 0, 0],
@@ -87,12 +113,22 @@ function init(){
     generateTetromino();
     cells = document.querySelectorAll('.grid div');
     moveDown();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+function updateTimer() {
+    totalSeconds++;
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+    document.querySelector('.timer').innerText = `${minutes} : ${seconds}`;
 }
 
 //кнопка restart
 btn.addEventListener('click', function(){
     document.querySelector('.grid').innerHTML = '';
     overlay.style.display = 'none';
+    clearInterval(timerInterval);
+    alert('GAME IS OVER. YOUR TIME IS: ' + document.querySelector('.timer').innerText)
+    totalSeconds = 0;
     init();
 })
 
@@ -213,15 +249,6 @@ function findFilledRows(){
 }
 
 
-//ГЕНЕРУЄТЬСЯ ПОЛЕ
-// generatePlayfield();
-//СТВОРЮЄТЬСЯ ФІГУРКА
-// generateTetromino();
-
-
-
-
-
 // видалити малюнок - додати малюнок -> памятає всі наші фігури
 function drawPlayfield() { 
     for (let row = 0; row < PLAYFIELD_ROWS; row++) {
@@ -337,6 +364,9 @@ function onKeyDown(e) {
     // if Escape
     if (!isPaused) {
         switch (e.key) {
+              case ' ':
+                dropTetrominoDown();
+                break;
             case 'ArrowUp':
                 rotate();
                 break;
@@ -354,6 +384,11 @@ function onKeyDown(e) {
     draw() 
 }
 
+document.addEventListener('keydown', function(e) {
+    if (e.code === 'Space') {
+        e.preventDefault(); 
+    }
+});
 
 function isValid(){
     const matrixSize = tetromino.matrix.length;
@@ -404,7 +439,8 @@ function moveTetrominoDown() {
          tetromino.row -= 1;  
          placeTetromino()
     }
-startLoop()
+    startLoop()
+    //  draw();
 }
 function moveTetrominoLeft() {
     tetromino.column -= 1;
@@ -465,7 +501,13 @@ function moveDown(){
         gameOver();
     }
 }
-
+document.querySelector('.newGame').addEventListener('click', function() {
+    document.querySelector('.grid').innerHTML = '';
+    overlay.style.display = 'none';
+    clearInterval(timerInterval);
+    totalSeconds = 0;
+    init();
+})
 
 function gameOver(){
     stopLoop();
@@ -495,7 +537,3 @@ function togglePauseGame(){
     isPaused = !isPaused;
 }
 
-// поставити const rowTetro = -2, прописати код, щоб працювало коректно
-// зверстати поле для розрахунку балів
-// прописати логіку і код розрахунку балі гри (1 ряд = 10, 2 ряди = 30, 3 ряди = 50, 4 ряди =100)
-// реалізувати самостійний рух фігур до низу.
